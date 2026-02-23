@@ -1,0 +1,731 @@
+@layer base {
+  .market-force-white,
+  .market-force-white * {
+    color: hsl(var(--pure-white)) !important;
+  }
+
+  .market-force-white svg,
+  .market-force-white svg * {
+    color: inherit !important;
+  }
+
+  /* Burger-/Sidebar-Menü: aktive Farbe (passt sich je nach Light/Dark an) */
+  .pp15-burger-active,
+  .pp15-burger-active * {
+    color: hsl(var(--pp15-burger-active)) !important;
+  }
+
+  .pp15-burger-active svg,
+  .pp15-burger-active svg * {
+    color: inherit !important;
+  }
+
+  .pp15-image-sharp {
+    /* Make UI screenshots as crisp as possible */
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    -ms-interpolation-mode: nearest-neighbor;
+
+    /* Reduce soft blurring when scaling + add stronger "crispy" feel */
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    will-change: transform;
+
+    /* Keep original colors: no color/contrast filters */
+    filter: none;
+  }
+
+  /* Benefit cards (flip) */
+  .pp15-flip {
+    perspective: 1200px;
+    -webkit-perspective: 1200px;
+  }
+  .pp15-flip-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
+    transition: transform 820ms cubic-bezier(0.22, 1, 0.36, 1);
+    -webkit-transition: -webkit-transform 820ms cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pp15-flip-inner {
+      transition: none;
+    }
+  }
+  .pp15-flip.is-flipped .pp15-flip-inner {
+    transform: rotateY(180deg);
+    -webkit-transform: rotateY(180deg);
+  }
+  .pp15-flip-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform-style: preserve-3d;
+
+    /* Smooth, premium feel */
+    transition:
+      filter 650ms cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 650ms cubic-bezier(0.22, 1, 0.36, 1),
+      background-position 900ms cubic-bezier(0.22, 1, 0.36, 1);
+
+    /* Dark cards: keep light text readable */
+    text-shadow: 0 2px 14px hsl(0 0% 0% / 0.35);
+  }
+
+  /* Back side: dark readable surface */
+  .pp15-benefit-back {
+    background-image: linear-gradient(
+      135deg,
+      hsl(var(--benefit-back-a)),
+      hsl(var(--benefit-back-b)),
+      hsl(var(--benefit-back-c))
+    );
+    background-size: 140% 140%;
+    background-position: 0% 0%;
+    color: hsl(var(--benefit-back-fg));
+    text-shadow: none;
+  }
+  .pp15-flip.is-flipped .pp15-benefit-back {
+    background-position: 100% 100%;
+  }
+  .pp15-benefit-back-body {
+    color: hsl(var(--benefit-back-muted));
+  }
+  .pp15-benefit-back-body li::marker {
+    color: hsl(var(--benefit-back-fg));
+  }
+  .pp15-flip-front {
+    transform: rotateY(0deg) translateZ(0.5px);
+    -webkit-transform: rotateY(0deg) translateZ(0.5px);
+    /* Ensure readable text on dark cards even in light mode */
+    color: hsl(var(--benefit-back-fg)) !important;
+  }
+  .pp15-flip-back {
+    transform: rotateY(180deg) translateZ(0.5px);
+    -webkit-transform: rotateY(180deg) translateZ(0.5px);
+  }
+
+  /* Text clamping helpers (avoid overflow on small screens) */
+  .pp15-clamp-2 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+  .pp15-clamp-3 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+  }
+
+  /* Benefit card backgrounds (front): unified black/gray mix with fluid movement */
+  .pp15-benefit-gradient-1,
+  .pp15-benefit-gradient-2,
+  .pp15-benefit-gradient-3,
+  .pp15-benefit-gradient-4 {
+    background-image: linear-gradient(
+      135deg,
+      hsl(var(--benefit-back-a)),
+      hsl(var(--benefit-back-b)),
+      hsl(var(--benefit-back-c))
+    );
+    background-size: 140% 140%;
+    background-position: 0% 0%;
+  }
+  .pp15-flip:hover .pp15-benefit-gradient-1,
+  .pp15-flip:hover .pp15-benefit-gradient-2,
+  .pp15-flip:hover .pp15-benefit-gradient-3,
+  .pp15-flip:hover .pp15-benefit-gradient-4 {
+    background-position: 100% 100%;
+  }
+  .pp15-flip.is-flipped .pp15-benefit-gradient-1,
+  .pp15-flip.is-flipped .pp15-benefit-gradient-2,
+  .pp15-flip.is-flipped .pp15-benefit-gradient-3,
+  .pp15-flip.is-flipped .pp15-benefit-gradient-4 {
+    background-position: 100% 100%;
+  }
+
+  :root {
+    --pure-white: 0 0% 100%;
+    --sea: 215 82% 39%; /* Deep sea blue for island background */
+    --grout: 46 85% 56%; /* Warm golden grout between tiles */
+    --grass-a: 120 44% 52%; /* Tile gradient start */
+    --grass-b: 120 38% 44%; /* Tile gradient end */
+    --map-bg: 120 30% 88%; /* Map page background (light green) */
+
+    --background: 60 23% 90%;
+    --foreground: 245 70% 23%;
+    /* iOS safe-area fallbacks */
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-right: env(safe-area-inset-right, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-left: env(safe-area-inset-left, 0px);
+
+    --card: 60 23% 90%;
+    --card-foreground: 245 70% 23%;
+
+    --popover: 60 23% 90%;
+    --popover-foreground: 245 70% 23%;
+
+    --primary: 245 70% 23%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 60 15% 86%;
+    --secondary-foreground: 245 70% 23%;
+
+    --muted: 60 15% 86%;
+    --muted-foreground: 245 20% 40%;
+
+    --accent: 60 20% 88%;
+    --accent-foreground: 245 70% 23%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 245 12% 80%;
+    --input: 245 12% 80%;
+    --ring: 245 80% 46%;
+
+    /* Burger-/Sidebar-Menü: aktive Schriftfarbe (helles Dunkelblau im Dark Mode) */
+    --pp15-burger-active: 245 70% 23%;
+
+    --radius: 0.75rem;
+
+    /* Custom map colors */
+    --gold: 46 90% 55%;
+    --owned: 135 35% 45%; /* Natürliches Grün: besetzt (jemand anderes) */
+    --owned-mine: 135 45% 30%; /* Etwas dunkleres Grün: meine m² */
+    --free: 135 45% 70%; /* Helles, natürliches Grün: frei (kaufbar) */
+    --listing: 210 8% 72%; /* Neutrales Grau: m² mit aktivem Listing */
+
+    /* Roof accent colors */
+    --roof-blue-1: 210 90% 70%;
+    --roof-blue-2: 210 90% 60%;
+    --roof-red-1: 0 80% 70%;
+    --roof-red-2: 0 80% 60%;
+    --roof-gold-1: 46 95% 70%;
+    --roof-gold-2: 46 90% 55%;
+
+    /* Auth first-login pill colors (kept white in both themes for 1:1 look) */
+    --auth-pill-bg: 0 0% 100%;
+    --auth-pill-fg: 240 10% 3.9%;
+    --auth-pill-border: 214 20% 88%;
+
+    /* Benefit card gradients (light) */
+    /* Benefit 1: light silver/white (slightly darker) */
+    --benefit-1-a: 210 8% 56%;
+    --benefit-1-b: 0 0% 96%;
+    --benefit-1-c: 210 10% 82%;
+
+    /* Benefit 2: red → orange → yellow with purple edge (slightly darker) */
+    --benefit-2-a: 275 80% 50%;
+    --benefit-2-b: 330 85% 50%;
+    --benefit-2-c: 10 90% 50%;
+    --benefit-2-d: 45 95% 54%;
+
+    /* Benefit 3: deep blue → cyan (slightly darker) */
+    --benefit-3-a: 225 100% 20%;
+    --benefit-3-b: 215 100% 30%;
+    --benefit-3-c: 195 100% 44%;
+
+    /* Benefit 4: violet/pink (slightly darker) */
+    --benefit-4-a: 270 70% 26%;
+    --benefit-4-b: 315 75% 34%;
+    --benefit-4-c: 345 80% 40%;
+
+    /* Back side (light & dark) */
+    --benefit-back-a: 240 8% 8%;
+    --benefit-back-b: 240 10% 12%;
+    --benefit-back-c: 240 12% 18%;
+    --benefit-back-fg: 0 0% 96%;
+    --benefit-back-muted: 240 6% 80%;
+
+    /* PP Top-up (keypad) - use a consistent dark "wallet" surface even in light mode */
+    --pp-topup-shell: 240 10% 5%;
+    --pp-topup-shell-border: 240 6% 18%;
+    --pp-topup-muted: 240 5% 70%;
+
+    --pp-topup-chip: 240 6% 12%;
+    --pp-topup-chip-border: 240 6% 18%;
+
+    --pp-topup-asset: 240 7% 10%;
+    --pp-topup-asset-border: 240 6% 18%;
+    --pp-topup-asset-icon: 240 6% 16%;
+
+    --pp-topup-pill: 240 6% 12%;
+    --pp-topup-pill-border: 240 6% 18%;
+
+    --pp-topup-key: 240 7% 10%;
+    --pp-topup-key-border: 240 6% 18%;
+
+    --pp-topup-cta: 0 0% 98%;
+    --pp-topup-cta-fg: 240 10% 6%;
+  }
+
+  .dark {
+    --pure-white: 0 0% 100%;
+    --sea: 215 74% 22%;
+    --grout: 46 78% 50%;
+    --grass-a: 120 42% 48%;
+    --grass-b: 120 34% 38%;
+    --map-bg: 120 18% 10%; /* Map page background (dark green) */
+
+    --background: 240 10% 4%;
+    --foreground: 0 0% 98%;
+
+    --card: 240 10% 8%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 240 10% 6%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 221 92% 70%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 240 5% 15%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 240 5% 12%;
+    --muted-foreground: 240 5% 64%;
+
+    --accent: 240 5% 18%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 240 5% 20%;
+    --input: 240 5% 20%;
+    --ring: 221 96% 80%;
+
+    /* Burger-/Sidebar-Menü: aktive Schriftfarbe (helles Dunkelblau) */
+    --pp15-burger-active: 215 90% 75%;
+
+    --radius: 0.75rem;
+
+    /* Custom map colors */
+    --gold: 46 85% 60%;
+    --owned: 135 40% 40%; /* Natürliches Grün (Dark): besetzt (jemand anderes) */
+    --owned-mine: 135 50% 28%; /* Etwas dunkleres Grün (Dark): meine m² */
+    --free: 135 50% 55%; /* Helles, natürliches Grün (Dark): frei (kaufbar) */
+    --listing: 210 6% 48%; /* Neutrales Grau (Dark): m² mit aktivem Listing */
+
+    /* Roof accent colors */
+    --roof-blue-1: 210 90% 60%;
+    --roof-blue-2: 210 90% 50%;
+    --roof-red-1: 0 80% 60%;
+    --roof-red-2: 0 80% 50%;
+    --roof-gold-1: 46 95% 62%;
+    --roof-gold-2: 46 90% 50%;
+
+    /* Keep auth pill white in dark mode for photo-accurate look */
+    --auth-pill-bg: 0 0% 100%;
+    --auth-pill-fg: 240 10% 3.9%;
+    --auth-pill-border: 214 20% 62%;
+
+    /* Benefit card gradients (dark) */
+    /* Slightly darker for a richer look */
+    --benefit-1-a: 210 8% 46%;
+    --benefit-1-b: 0 0% 88%;
+    --benefit-1-c: 210 10% 66%;
+
+    --benefit-2-a: 275 80% 46%;
+    --benefit-2-b: 330 85% 46%;
+    --benefit-2-c: 10 90% 46%;
+    --benefit-2-d: 45 95% 50%;
+
+    --benefit-3-a: 225 100% 18%;
+    --benefit-3-b: 215 100% 26%;
+    --benefit-3-c: 195 100% 38%;
+
+    --benefit-4-a: 270 70% 22%;
+    --benefit-4-b: 315 75% 30%;
+    --benefit-4-c: 345 80% 36%;
+
+    --benefit-back-a: 240 10% 6%;
+    --benefit-back-b: 240 10% 10%;
+    --benefit-back-c: 240 10% 14%;
+    --benefit-back-fg: 0 0% 98%;
+    --benefit-back-muted: 240 6% 78%;
+
+    /* PP Top-up (keypad) */
+    --pp-topup-shell: 240 10% 5%;
+    --pp-topup-shell-border: 240 6% 18%;
+    --pp-topup-muted: 240 5% 70%;
+
+    --pp-topup-chip: 240 6% 12%;
+    --pp-topup-chip-border: 240 6% 18%;
+
+    --pp-topup-asset: 240 7% 10%;
+    --pp-topup-asset-border: 240 6% 18%;
+    --pp-topup-asset-icon: 240 6% 16%;
+
+    --pp-topup-pill: 240 6% 12%;
+    --pp-topup-pill-border: 240 6% 18%;
+
+    --pp-topup-key: 240 7% 10%;
+    --pp-topup-key-border: 240 6% 18%;
+
+    --pp-topup-cta: 0 0% 98%;
+    --pp-topup-cta-fg: 240 10% 6%;
+  }
+
+  /* Prevent iPhone Safari auto-zoom on input focus by ensuring at least 16px font-size on small screens */
+  @media (max-width: 640px) {
+    input,
+    select,
+    textarea {
+      font-size: 16px !important;
+      -webkit-text-size-adjust: 100%;
+    }
+  }
+
+  /* Press feedback: turn buttons blue while pressed. */
+  .pp-press-blue {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  .pp-press-blue:active,
+  .pp-press-blue[aria-pressed="true"] {
+    background-color: hsl(var(--ring)) !important;
+    color: hsl(var(--primary-foreground)) !important;
+    border-color: hsl(var(--ring)) !important;
+  }
+  .pp-press-blue:active svg,
+  .pp-press-blue[aria-pressed="true"] svg {
+    color: hsl(var(--primary-foreground)) !important;
+  }
+
+  /* Utility class for modern sort controls (Islands) */
+  .sort-control {
+    font-family: Arial, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+      sans-serif;
+  }
+
+  /* PP Top-up (keypad) styling */
+  .pp-topup-overlay {
+    /* Force a dark, modern overlay even in light mode */
+    background:
+      radial-gradient(
+        1200px 800px at 50% -20%,
+        hsl(var(--pp-topup-chip) / 0.55),
+        hsl(var(--pp-topup-shell) / 0.92) 55%,
+        hsl(0 0% 0% / 0.92) 100%
+      );
+  }
+
+  .pp-topup-shell {
+    background: linear-gradient(
+      180deg,
+      hsl(var(--pp-topup-shell)),
+      hsl(var(--pp-topup-shell))
+    );
+    border: 1px solid hsl(var(--pp-topup-shell-border));
+    color: hsl(var(--pure-white));
+    box-shadow:
+      0 16px 50px hsl(0 0% 0% / 0.45),
+      inset 0 1px 0 hsl(0 0% 100% / 0.04);
+  }
+
+  .pp-topup-muted {
+    color: hsl(var(--pp-topup-muted));
+  }
+
+  .pp-topup-chip {
+    background-color: hsl(var(--pp-topup-chip));
+    border: 1px solid hsl(var(--pp-topup-chip-border));
+    color: hsl(var(--pure-white));
+    box-shadow: inset 0 1px 0 hsl(0 0% 100% / 0.05);
+  }
+
+  .pp-topup-asset {
+    background-color: hsl(var(--pp-topup-asset));
+    border: 1px solid hsl(var(--pp-topup-asset-border));
+    color: hsl(var(--pure-white));
+    box-shadow: inset 0 1px 0 hsl(0 0% 100% / 0.04);
+  }
+
+  .pp-topup-asset-icon {
+    background-color: hsl(var(--pp-topup-asset-icon));
+    border: 1px solid hsl(var(--pp-topup-asset-border));
+    color: hsl(var(--pure-white));
+  }
+
+  .pp-topup-pill {
+    background-color: hsl(var(--pp-topup-pill));
+    border: 1px solid hsl(var(--pp-topup-pill-border));
+    color: hsl(var(--pure-white));
+    transition:
+      transform 120ms ease,
+      background-color 160ms ease,
+      border-color 160ms ease;
+  }
+  .pp-topup-pill:active {
+    transform: scale(0.98);
+  }
+  .pp-topup-pill:disabled {
+    opacity: 0.55;
+  }
+
+  .pp-topup-key {
+    background-color: hsl(var(--pp-topup-key));
+    border: 1px solid hsl(var(--pp-topup-key-border));
+    color: hsl(var(--pure-white));
+    transition:
+      transform 120ms ease,
+      background-color 160ms ease,
+      border-color 160ms ease;
+  }
+  .pp-topup-key:active {
+    transform: scale(0.98);
+    background-color: hsl(var(--pp-topup-chip));
+    border-color: hsl(var(--pp-topup-chip-border));
+  }
+  .pp-topup-key:disabled {
+    opacity: 0.55;
+  }
+
+  .pp-topup-cta {
+    background-color: hsl(var(--pp-topup-cta));
+    color: hsl(var(--pp-topup-cta-fg));
+    border: 1px solid hsl(var(--pp-topup-cta));
+    box-shadow:
+      0 10px 30px hsl(0 0% 0% / 0.35),
+      inset 0 1px 0 hsl(0 0% 100% / 0.5);
+    transition:
+      transform 120ms ease,
+      opacity 160ms ease;
+  }
+  .pp-topup-cta:active {
+    transform: scale(0.99);
+  }
+  .pp-topup-cta:disabled {
+    opacity: 0.55;
+  }
+}
+
+/* Ensure the top-up keypad always renders readable text even in light theme */
+.pp-topup-shell input,
+.pp-topup-shell button {
+  color: inherit;
+}
+
+/* Slightly larger tap targets on small screens (iPhone) */
+@media (max-width: 640px) {
+  button,
+  [role="button"],
+  .btn,
+  .Button {
+    min-height: 44px; /* Apple HIG recommended */
+    padding-left: 14px;
+    padding-right: 14px;
+    font-size: 0.95rem; /* ~15px */
+  }
+}
+
+/* Custom utilities */
+/* Safe area helpers for iPhone (notch) */
+.safe-top { padding-top: var(--safe-top); }
+.safe-bottom { padding-bottom: var(--safe-bottom); }
+.safe-left { padding-left: var(--safe-left); }
+.safe-right { padding-right: var(--safe-right); }
+.safe-x { padding-left: var(--safe-left); padding-right: var(--safe-right); }
+.safe-y { padding-top: var(--safe-top); padding-bottom: var(--safe-bottom); }
+
+/* Neon blink + quick shake for live activity pings */
+/* Use CSS var --neon for color (hsl space-separated). Defaults to --ring if not set. */
+@keyframes neon-blink {
+  0% { box-shadow: 0 0 0 rgba(0,0,0,0); background-image: none; transform: scale(1); }
+  40% {
+    box-shadow: 0 0 0 4px hsl(var(--neon, var(--ring)) / 0.55), 0 0 24px hsl(var(--neon, var(--ring)) / 0.75);
+    transform: scale(1.03);
+  }
+  100% { box-shadow: 0 0 0 rgba(0,0,0,0); background-image: none; transform: scale(1); }
+}
+@keyframes shake-quick {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-2px); }
+  40% { transform: translateX(2px); }
+  60% { transform: translateX(-1.5px); }
+  80% { transform: translateX(1.5px); }
+}
+
+/* Helper classes to set neon hues */
+.neon-green { --neon: 141 85% 50%; }
+.neon-violet { --neon: 272 90% 62%; }
+.neon-pink { --neon: 320 90% 60%; }
+.neon-cyan { --neon: 190 92% 50%; }
+
+.bg-gold { background-color: hsl(var(--gold)); }
+.bg-owned { background-color: hsl(var(--owned)); }
+.bg-owned-mine { background-color: hsl(var(--owned-mine)); }
+/* Free plots: solid light green inlay only (no overlays) */
+.bg-free {
+  background-color: hsl(var(--free));
+}
+.selection-ring { box-shadow: 0 0 0 2px hsl(var(--ring)); }
+.tile { box-shadow: 0 1px 1px rgba(0,0,0,0.06); }
+.house-pop { animation: house-pop 360ms ease-out; }
+@keyframes house-pop {
+  0% { transform: scale(0.92); opacity: 0.0; }
+  60% { transform: scale(1.04); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+/* Landing page section slide-in animation */
+@keyframes landing-slide-in-right {
+  0% { opacity: 0; transform: translateX(24px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+.landing-slide-in-right {
+  animation: landing-slide-in-right 360ms ease-out;
+}
+
+/* Faceted roof overlays (tileable, lightweight) */
+.roof {
+  position: relative;
+  border-radius: 2px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.38),
+    inset 0 -1px 0 rgba(0,0,0,0.28),
+    0 1px 1px rgba(0,0,0,0.06);
+  overflow: hidden;
+  filter: saturate(var(--roof-sat)) contrast(var(--roof-ctr)) brightness(var(--roof-bri));
+  will-change: transform, box-shadow;
+}
+
+/* Base color gradient per type */
+.roof-blue {
+  background-image: linear-gradient(135deg, hsl(var(--roof-blue-1)) 0%, hsl(var(--roof-blue-2)) 100%);
+}
+.roof-red {
+  background-image: linear-gradient(135deg, hsl(var(--roof-red-1)) 0%, hsl(var(--roof-red-2)) 100%);
+}
+.roof-gold {
+  background-image: linear-gradient(135deg, hsl(var(--roof-gold-1)) 0%, hsl(var(--roof-gold-2)) 100%);
+}
+
+/* Defaults for shingle sizing (overridden per type) */
+/* Angle variables allow directional lighting and shingle orientation tweaks */
+.roof { --shingle-row: 7px; --shingle-col: 10px; --chimney-a: 0.04; --skylight-a: 0.06; --ridge-a: 0.7; --roof-sat: 1.05; --roof-ctr: 1.04; --roof-bri: 1; --light-angle: 135deg; --row-angle: 180deg; --col-angle: 90deg; }
+.roof-basic { --shingle-row: 7px; --shingle-col: 10px; --chimney-a: 0.06; --skylight-a: 0.06; --ridge-a: 0.72; --roof-sat: 1.06; --roof-ctr: 1.05; --roof-bri: 1; }
+.roof-villa { --shingle-row: 6px; --shingle-col: 8px; --chimney-a: 0.09; --skylight-a: 0.12; --ridge-a: 0.8; --roof-sat: 1.1; --roof-ctr: 1.06; --roof-bri: 1.01; }
+.roof-mansion { --shingle-row: 5px; --shingle-col: 7px; --chimney-a: 0.12; --skylight-a: 0.16; --ridge-a: 0.84; --roof-sat: 1.14; --roof-ctr: 1.07; --roof-bri: 1.02; }
+
+/* Shingle rows, seams, and global lighting */
+/* Extra photoreal boost for roofs */
+.roof {
+  background-blend-mode: overlay, normal;
+}
+
+/* Direction helpers for per-house variation */
+.roof-tilt-n { --light-angle: 120deg; --row-angle: 180deg; --col-angle: 90deg; --enter-rot: -0.5deg; }
+.roof-tilt-e { --light-angle: 60deg; --row-angle: 180deg; --col-angle: 90deg; --enter-rot: 0.4deg; }
+.roof-tilt-s { --light-angle: 210deg; --row-angle: 180deg; --col-angle: 90deg; --enter-rot: 0.3deg; }
+.roof-tilt-w { --light-angle: 300deg; --row-angle: 180deg; --col-angle: 90deg; --enter-rot: -0.3deg; }
+
+/* Slight material variants to add realism (optional utility) */
+.roof-slate { --roof-ctr: 1.06; --roof-bri: 0.98; }
+.roof-clay { --roof-sat: 1.12; --roof-bri: 1.02; }.roof::after {
+  content: "";
+  position: absolute; inset: 0;
+  background-image:
+    /* subtle chimney blobs (type-controlled) */
+    radial-gradient(circle at 18% 22%, rgba(0,0,0,var(--chimney-a)), rgba(0,0,0,0) 38%),
+    radial-gradient(circle at 78% 28%, rgba(0,0,0,calc(var(--chimney-a) * 0.8)), rgba(0,0,0,0) 40%),
+    /* skylight sheen (type-controlled) */
+    linear-gradient(155deg, rgba(255,255,255,var(--skylight-a)) 0%, rgba(255,255,255,0) 45%),
+    /* global lighting sweep (direction via --light-angle) */
+    linear-gradient(var(--light-angle), rgba(255,255,255,0.18) 0%, rgba(0,0,0,0.12) 100%),
+    /* soft top-left highlight vignette */
+    radial-gradient(ellipse at 22% 20%, rgba(255,255,255,0.22), rgba(255,255,255,0) 60%),
+    /* shingle rows (direction via --row-angle) */
+    repeating-linear-gradient(var(--row-angle), rgba(0,0,0,0.06) 0 1px, transparent 1px var(--shingle-row)),
+    /* vertical seams (grid A) (direction via --col-angle) */
+    repeating-linear-gradient(var(--col-angle), transparent 0 calc(var(--shingle-col) - 1px), rgba(0,0,0,0.05) calc(var(--shingle-col) - 1px) var(--shingle-col)),
+    /* vertical seams (grid B offset for brick pattern) */
+    repeating-linear-gradient(var(--col-angle), transparent 0 calc(var(--shingle-col) - 1px), rgba(0,0,0,0.05) calc(var(--shingle-col) - 1px) var(--shingle-col)),
+    /* subtle granular texture */
+    radial-gradient(1px 1px at 20% 30%, rgba(0,0,0,0.06), rgba(0,0,0,0) 60%),
+    radial-gradient(1px 1px at 65% 70%, rgba(255,255,255,0.05), rgba(255,255,255,0) 60%);
+  background-size:
+    cover,
+    cover,
+    auto,
+    auto,
+    auto;
+  background-position:
+    0 0,
+    0 0,
+    0 0,
+    0 0,
+    calc(var(--shingle-col)/2) calc(var(--shingle-row)/2);
+  pointer-events: none;
+}
+
+/* Ridge highlight and bottom lip shadow for depth */
+.roof::before {
+  content: "";
+  position: absolute; inset: 0;
+  background:
+    /* subtle ridge highlight near top (rotates by light angle) */
+    linear-gradient(calc(var(--light-angle) + 180deg), rgba(255,255,255,0.22), rgba(255,255,255,0.04) 32%, rgba(0,0,0,0) 38%),
+    /* bottom edge shadow */
+    linear-gradient(calc(var(--light-angle) - 180deg), rgba(0,0,0,0.18), rgba(0,0,0,0) 18%);
+  opacity: var(--ridge-a);
+  pointer-events: none;
+}
+
+/* Global animations and helpers */
+@keyframes spin360 {
+  to { transform: rotate(360deg); }
+}
+
+.spin-slow { animation: spin360 1.1s linear infinite; }
+
+@keyframes roofGlowPop {
+  0% { transform: scale(0.96) rotate(var(--enter-rot, 0deg)); box-shadow: 0 0 0 rgba(0,0,0,0); }
+  60% { transform: scale(1.03) rotate(var(--enter-rot, 0deg)); box-shadow: 0 8px 20px rgba(0,0,0,0.12); }
+  100% { transform: scale(1) rotate(var(--enter-rot, 0deg)); box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+}
+
+.roof-anim { animation: roofGlowPop 380ms ease-out; will-change: transform, box-shadow; }
+
+/* Success overlay pop for 3s green check */
+@keyframes success-pop {
+  0% { transform: scale(0.85); opacity: 0; }
+  50% { transform: scale(1.06); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.success-pop { animation: success-pop 320ms ease-out; }
+
+/* Receipt table grid helpers */
+.receipt-row > div { padding: 0.25rem 0.5rem; }
+.receipt-row > div:not(:last-child) { border-right: 1px solid hsl(var(--border)); }
+
+/* Auth pills + separator (white, rounded, thin border) */
+.auth-pill {
+  background-color: hsl(var(--auth-pill-bg));
+  color: hsl(var(--auth-pill-fg));
+  border: 2px solid hsl(var(--auth-pill-border));
+  border-radius: 9999px;
+  padding: 1.1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.auth-pill:hover { background-color: hsl(0 0% 98%); }
+.auth-sep-line { background-color: hsl(var(--auth-pill-border)); height: 2px; opacity: 0.5; }
+
+/* Big CTA for first login */
+.cta-auth {
+  border-radius: 9999px;
+  padding: 1.25rem 2rem;
+  font-size: 1.5rem; /* ~24px */
+  font-weight: 800;
+}
