@@ -25377,11 +25377,33 @@ function IslandsScreen() {
     | "available_m2_asc"
   >("newest");
 
-  const formatPPC = (value: number | null | undefined) =>
-    `${(value ?? 0).toLocaleString("en-US", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
+  const formatPPC = (value: number | null | undefined) => {
+    const n = Number(value ?? 0) || 0;
+    const dec = Math.abs(n) < 100 ? 4 : 2;
+    return `${n.toLocaleString("en-US", {
+      minimumFractionDigits: dec,
+      maximumFractionDigits: dec,
     })} PPC`;
+  };
+
+  const calcIslandPriceAtSold = (input: {
+    startPrice: number;
+    stepUpPct: number;
+    totalSupplyM2: number;
+    soldM2: number;
+  }) => {
+    const start = Number(input.startPrice || 0);
+    const stepUp = Number(input.stepUpPct || 0);
+    const supplyN = Math.max(1, Math.floor(Number(input.totalSupplyM2 || 1)));
+    const soldN = Math.max(0, Number(input.soldM2 || 0));
+    if (!Number.isFinite(start) || start <= 0) return 0;
+    if (!Number.isFinite(stepUp) || stepUp === 0) return start;
+    const stepUnitM2 = Math.max(1, supplyN / 100);
+    const r = 1 + stepUp / 100;
+    const exponent = soldN / stepUnitM2;
+    const priceN = start * Math.pow(r, exponent);
+    return Number.isFinite(priceN) && priceN >= 0 ? priceN : 0;
+  };
 
   // Simple suggestion: more supply → smaller step suggestion
   const allIslands = (publishedIslands as any[]) ?? [];
@@ -26312,6 +26334,59 @@ function IslandsScreen() {
                   Start fee: <span className="font-semibold">$5</span>{" "}
                   (one-time)
                 </div>
+
+                <div className="mt-1">
+                  {(() => {
+                    const nSupply = Math.max(
+                      0,
+                      Math.floor(
+                        Number((supply || "0").replace(/[^0-9]/g, "")) || 0,
+                      ),
+                    );
+                    const nOwn = Math.max(
+                      0,
+                      Math.min(
+                        nSupply,
+                        Math.floor(
+                          Number((ownM2 || "0").replace(/[^0-9]/g, "")) || 0,
+                        ),
+                      ),
+                    );
+                    const nPrice = Number((price || "").replace(",", "."));
+                    const stepRaw = (stepUpPct || "").trim();
+                    const nStep = stepRaw
+                      ? Number(stepRaw.replace(",", "."))
+                      : suggestedPct;
+
+                    if (!Number.isFinite(nSupply) || nSupply <= 0) return null;
+                    if (!Number.isFinite(nPrice) || nPrice <= 0) return null;
+
+                    const effectiveStep = Number.isFinite(nStep) ? nStep : 0;
+                    const publicStart = calcIslandPriceAtSold({
+                      startPrice: nPrice,
+                      stepUpPct: effectiveStep,
+                      totalSupplyM2: nSupply,
+                      soldM2: nOwn,
+                    });
+
+                    if (!Number.isFinite(publicStart) || publicStart <= 0)
+                      return null;
+
+                    // If nOwn is 0, publicStart == start price.
+                    return (
+                      <div className="text-muted-foreground">
+                        Public starting m² price (after your own m²):{" "}
+                        <span className="font-semibold text-foreground">
+                          {formatPPC(publicStart)}
+                        </span>
+                        {nOwn > 0 ? (
+                          <span className="ml-1">(you pre-own {nOwn} m²)</span>
+                        ) : null}
+                      </div>
+                    );
+                  })()}
+                </div>
+
                 <div>
                   Revenue split: <span className="font-semibold">80%</span> to
                   you, <span className="font-semibold">20%</span> to the
