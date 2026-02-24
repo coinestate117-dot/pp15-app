@@ -636,6 +636,10 @@ function toCHF(n: number) {
   return Math.round(n * 100) / 100;
 }
 
+function toPPCPrice(n: number) {
+  return Math.round(n * 10000) / 10000;
+}
+
 async function _recordMarketPriceSamples(input: {
   startPrice: number;
   amountM2: number;
@@ -682,7 +686,7 @@ function _islandPriceAtSoldM2(
   const sold = Math.max(0, Number(soldM2 || 0));
 
   if (!Number.isFinite(start) || start <= 0) return 0;
-  if (!Number.isFinite(stepUp) || stepUp === 0) return toCHF(start);
+  if (!Number.isFinite(stepUp) || stepUp === 0) return toPPCPrice(start);
 
   // The creator chooses a max +5% “speed”, but the actual bump scales with how many m²
   // are sold in a single buy by spreading the bump across the island’s total supply.
@@ -691,7 +695,7 @@ function _islandPriceAtSoldM2(
   const r = 1 + stepUp / 100;
   const exponent = sold / stepUnitM2;
   const price = start * Math.pow(r, exponent);
-  return Number.isFinite(price) && price >= 0 ? toCHF(price) : 0;
+  return Number.isFinite(price) && price >= 0 ? toPPCPrice(price) : 0;
 }
 
 async function buyersCount(): Promise<number> {
@@ -5962,7 +5966,7 @@ export async function createIsland(input: {
             ticker,
             iconUrl: iconUrl,
             totalSupplyM2,
-            startPriceUSD: toCHF(startPriceUSD),
+            startPriceUSD: toPPCPrice(startPriceUSD),
             stepUpPct: toCHF(stepUpPct),
             stepDownPct: toCHF(stepDownPct),
             commissionPct: 5,
